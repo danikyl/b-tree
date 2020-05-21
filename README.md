@@ -30,28 +30,26 @@ make run
 
 ### Todo list
 
-* Create Data structure for B-tree
-* Create datafile
+
 * Insert a register in datafile
 * Insert a register in the B-tree
 * Search a register by NUSP
 
-```
-make run
-``` 
 ### Doing
-
+* Create data generator 
 
 ### Done
+* Create Data structure for B-tree
+* Create datafile
 * Create repo
 * Create Readme
 * Select tasks for to do list
 
 ## Authors
 
-* **Hugo Fellipe** - *Initial work* - [Github](https://github.com/Hugo-cruz)
+* **Hugo Fellipe** - [Github](https://github.com/Hugo-cruz)
 
-* **Daniel Fucci** - *Initial work* - [Github](https://github.com/danikyl)
+* **Daniel Fucci** - [Github](https://github.com/danikyl)
 
 
 ## License
