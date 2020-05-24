@@ -1,6 +1,6 @@
 /*  
     Hugo Fellipe Lage Alvarães da Cruz  10903872
-    Daniel De Marco Fucci               11218639
+    Daniel De Marco Fucci               
 */
 #ifndef ARRAY_LIST_H
 #define ARRAY_LIST_H
