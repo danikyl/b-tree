@@ -21,15 +21,23 @@ int main (int argc, char *argv[]) {
 	FILE *invertedList_stream = fopen("inverted_list.dat", "ab+");
 	fclose(secIndex_stream);
 
+    FILE *bTree_stream = fopen("btree.dat", "ab+");
+    fclose(bTree_stream);
+
 
 
 	INDEX_RECORD_LIST *listPrim = (INDEX_RECORD_LIST *) calloc(1, sizeof(INDEX_RECORD_LIST));
 
 	INDEX_SEC_RECORD_LIST *listSec = (INDEX_SEC_RECORD_LIST *) calloc(1, sizeof(INDEX_SEC_RECORD_LIST));
 
+    PAGE *bTree = (PAGE *) calloc(1,sizeof(PAGE));
+
+
 	loadIndexPrim(listPrim);
 
 	loadIndexSec(listSec);
+
+    loadBTree(bTree);
 
 	do {
 		comando = 6;

@@ -1,10 +1,11 @@
 /*  
     Hugo Fellipe Lage Alvarães da Cruz  10903872
-    Daniel De Marco Fucci               11218639
+    Daniel De Marco Fucci               
 */
 #ifndef ARRAY_LIST_H
 #define ARRAY_LIST_H
 #define data_size 128
+#define order 8
 
 #define LAST_NAME_SIZE 50
 
@@ -24,6 +25,14 @@ typedef struct {
 	float score;
 	int isDeleted;
 } typeStudent;
+
+typedef struct {
+	//int contador;
+	int keys[order-1]; //assumindo chaves char
+	int sons[order]; //armazena o RRN dos filhos
+	int leaf;//1 = leaf, 0 = not leaf
+} PAGE; 
+
 
 typedef struct {
 	int nUsp;
@@ -76,5 +85,6 @@ void searchRecordByLastName(INDEX_SEC_RECORD_LIST *, INDEX_RECORD_LIST *);
 void deleteRecordByLastName(INDEX_SEC_RECORD_LIST *, char *, int);
 void deleteAllRecordsByLastName(INDEX_RECORD_LIST *, INDEX_SEC_RECORD_LIST *);
 void geradorAlunos(INDEX_RECORD_LIST *, INDEX_SEC_RECORD_LIST *, INDEX_RECORD *, INDEX_SEC_RECORD *);
+void loadBTree(PAGE *pageList);
 
 #endif

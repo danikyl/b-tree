@@ -31,14 +31,21 @@ make run
 ### Todo list
 
 
-* Insert a register in datafile
 * Insert a register in the B-tree
+* - Overflow in root node
+* - Insert in leaf node
+* -- With overflow in leaf node
+* -- Without overflow in leaf node
+* Insert a register in datafile
 * Search a register by NUSP
-
-### Doing
 * Create data generator 
 
+### Doing
+* Insert a register in the B-tree
+* - Insert into an empty tree
+
 ### Done
+* Load BTree in memory
 * Create Data structure for B-tree
 * Create datafile
 * Create repo

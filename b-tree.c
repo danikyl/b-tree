@@ -186,6 +186,44 @@ int add_to_inverted_list(INDEX_SEC_RECORD* record, int nUsp) {
 	
 }
 
+void loadBTree(PAGE *pageList) {
+  printf("entrou na btree \n");
+  FILE *index_stream= fopen("btree.dat", "r+");
+  fseek(index_stream, 0, 0);
+  PAGE *page = (PAGE *) malloc(sizeof(PAGE));
+  printf("size of btree: %ld\n",sizeof(pageList));
+  int i=0;
+  while (fread(index, sizeof(INDEX_RECORD), 1, index_stream)) {
+    //add_index_element(list, index);
+    //realloc
+    //list->start = (INDEX_LIST_ELEMENT **) realloc(list->start,sizeof(INDEX_LIST_ELEMENT *) * (list->size));
+    //ptr = realloc(ptr, n2 * sizeof(int));
+    /*typedef struct {
+      //int contador;
+      int keys[order-1]; //assumindo chaves char
+      int sons[order]; //armazena o RRN dos filhos
+      int leaf;//1 = leaf, 0 = not leaf
+    } PAGE; 
+    */
+    pageList = (PAGE *) realloc(pageList, sizeof(PAGE)*(i+1));
+    int j;
+    for(j=0;j<order-1;j++)
+    {
+      pageList[i].keys[j] = page->keys[j];
+    }
+    for(j=0;j<order;j++)
+    {
+      pageList[i].sons[j] = page->sons[j];
+    }
+
+    pageList[i].leaf = page->leaf;
+    i++;
+  }
+  
+  //free(index);
+  fclose(index_stream);
+}
+
 void loadIndexPrim(INDEX_RECORD_LIST *list) {
 	FILE *index_stream= fopen("index_prim.dat", "r+");
 	fseek(index_stream, 0, 0);
