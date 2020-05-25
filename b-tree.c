@@ -209,7 +209,8 @@ void loadBTree(PAGE *pageList) {
     int j;
     for(j=0;j<order-1;j++)
     {
-      pageList[i].keys[j] = page->keys[j];
+      pageList[i].keys[j].nusp = page->keys[j].nusp;
+      pageList[i].keys[j].rrn = page->keys[j].rrn;
     }
     for(j=0;j<order;j++)
     {
@@ -517,28 +518,21 @@ void readToWriteRecord(INDEX_RECORD_LIST *listPrim, INDEX_SEC_RECORD_LIST *listS
 
 	student->isDeleted=0;
 
-	writeRecord(listPrim, listSec, student, index_record, index_sec_record);
+	//writeRecord(listPrim, listSec, student, index_record, index_sec_record);
 
 	free (index_record);
 	free(index_sec_record);
 	free(student);
 }
-void writeRecord(INDEX_RECORD_LIST *listPrim, INDEX_SEC_RECORD_LIST *listSec, typeStudent *student, INDEX_RECORD *index_record, INDEX_SEC_RECORD *index_sec_record) {
+int writeRecord(typeStudent *student) {
 
 	FILE *data_file_stream= fopen("dados.txt", "a+");
 
 
 	fwrite(student, sizeof(typeStudent), 1, data_file_stream);
-	index_record->position = ftell(data_file_stream) - sizeof(typeStudent);
-	index_record->nUsp = student->numUSP;
-
-	strcpy(index_sec_record->lastName, student->lastName);
-	index_sec_record->headPosition = -1;
-
-	add_index_element(listPrim, index_record);
-	add_index_sec_element(listSec, index_sec_record, 1, index_record->nUsp);
-
+	int rrn = ftell(data_file_stream) - sizeof(typeStudent);
 	fclose(data_file_stream);
+	return rrn;
 
 }
 void print_index_list(INDEX_RECORD_LIST *list) {
@@ -564,8 +558,84 @@ void geradorAlunos(INDEX_RECORD_LIST *listPrim, INDEX_SEC_RECORD_LIST *listSec, 
 		strcpy(student->course, "BSI");
 		student->score = 8.0;
 		student->isDeleted = 0;
-		writeRecord(listPrim, listSec, student, index_record, index_sec_record);
+		//writeRecord(listPrim, listSec, student, index_record, index_sec_record);
 		printf("Student inserted: %d\n",nUSP);
 		free(student);
 	}
+}
+
+void addToBTree(PAGE *btree) {
+  
+	typeStudent *student = (typeStudent *) malloc(sizeof(typeStudent));
+	int nUSP = rand() % 100000;
+	student->numUSP = nUSP;
+	strcpy(student->name, "Hugo");
+	strcpy(student->lastName, "Cruz");
+	strcpy(student->course, "BSI");
+	student->score = 8.0;
+	student->isDeleted = 0;
+	int rrn = writeRecord(student);
+	printf("Student inserted: %d\n",nUSP);
+	printf("RRN: %d\n",rrn);
+	
+	/*
+	printf("Digite o numero USP: \n");
+	scanf ("%d", &student->numUSP);
+	printf("Digite o nome: \n");
+	scanf (" %[^\n]s", student->name);
+	printf("Digite o sobrenome: \n");
+	scanf (" %[^\n]s", student->lastName);
+	printf("Digite o curso: \n");
+	scanf (" %[^\n]s", student->course);
+	printf("Digite a nota: \n");
+	scanf ("%f", &student->score);
+	printf ("%d %s %s %s %.1f\n", student->numUSP, student->name, student->lastName, student->course, student->score);
+	*/
+  //caso 1: árvore vazia
+  if(btree[0].keys[0].nusp == 0)
+  {
+  	btree[0].keys[0].nusp == student->numUSP;
+  	btree[0].keys[0].rrn == rrn;
+  	int j;
+    for(j=0;j<order;j++)
+    {
+      btree[0].sons[j] = -1;
+    }
+    btree[0].leaf = 1;
+
+  }
+  free(student);
+  /*
+  int i=0;
+  while (fread(index, sizeof(INDEX_RECORD), 1, index_stream)) {
+    //add_index_element(list, index);
+    //realloc
+    //list->start = (INDEX_LIST_ELEMENT **) realloc(list->start,sizeof(INDEX_LIST_ELEMENT *) * (list->size));
+    //ptr = realloc(ptr, n2 * sizeof(int));
+    /*typedef struct {
+      //int contador;
+      int keys[order-1]; //assumindo chaves char
+      int sons[order]; //armazena o RRN dos filhos
+      int leaf;//1 = leaf, 0 = not leaf
+    } PAGE; 
+    */
+  	/*
+    pageList = (PAGE *) realloc(pageList, sizeof(PAGE)*(i+1));
+    int j;
+    for(j=0;j<order-1;j++)
+    {
+      pageList[i].keys[j] = page->keys[j];
+    }
+    for(j=0;j<order;j++)
+    {
+      pageList[i].sons[j] = page->sons[j];
+    }
+
+    pageList[i].leaf = page->leaf;
+    i++;
+  }
+  */
+  
+  //free(index);
+  //fclose(index_stream);
 }

@@ -45,6 +45,7 @@ int main (int argc, char *argv[]) {
 		scanf ("%d", &comando);
 		switch (comando) {
 			case 1:
+				addToBTree(bTree);
 				readToWriteRecord(listPrim, listSec);
 				break;
 			case 2:

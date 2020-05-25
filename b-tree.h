@@ -27,8 +27,13 @@ typedef struct {
 } typeStudent;
 
 typedef struct {
+	tipoChave nusp;
+	int rrn;
+} searchKey;
+
+typedef struct {
 	//int contador;
-	int keys[order-1]; //assumindo chaves char
+	searchKey keys[order-1]; //assumindo chaves char
 	int sons[order]; //armazena o RRN dos filhos
 	int leaf;//1 = leaf, 0 = not leaf
 } PAGE; 
@@ -66,7 +71,7 @@ typedef struct {
 } INDEX_SEC_RECORD_LIST;
 
 void readToWriteRecord(INDEX_RECORD_LIST *, INDEX_SEC_RECORD_LIST *);
-void writeRecord(INDEX_RECORD_LIST *, INDEX_SEC_RECORD_LIST *, typeStudent *, INDEX_RECORD *, INDEX_SEC_RECORD *);
+int writeRecord(typeStudent *);
 void showAll();
 void searchRecordByNUSP(INDEX_RECORD_LIST *, int);
 void deleteRecord(INDEX_RECORD_LIST *, INDEX_SEC_RECORD_LIST *, int);
@@ -86,5 +91,6 @@ void deleteRecordByLastName(INDEX_SEC_RECORD_LIST *, char *, int);
 void deleteAllRecordsByLastName(INDEX_RECORD_LIST *, INDEX_SEC_RECORD_LIST *);
 void geradorAlunos(INDEX_RECORD_LIST *, INDEX_SEC_RECORD_LIST *, INDEX_RECORD *, INDEX_SEC_RECORD *);
 void loadBTree(PAGE *pageList);
+void addToBTree(PAGE *);
 
 #endif
