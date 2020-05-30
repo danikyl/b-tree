@@ -33,7 +33,7 @@ typedef struct {
 
 typedef struct {
 	//int contador;
-	searchKey keys[order-1]; //assumindo chaves char
+	searchKey keys[order-1]; 
 	int sons[order]; //armazena o RRN dos filhos
 	int leaf;//1 = leaf, 0 = not leaf
 } PAGE; 
@@ -92,5 +92,6 @@ void deleteAllRecordsByLastName(INDEX_RECORD_LIST *, INDEX_SEC_RECORD_LIST *);
 void geradorAlunos(INDEX_RECORD_LIST *, INDEX_SEC_RECORD_LIST *, INDEX_RECORD *, INDEX_SEC_RECORD *);
 void loadBTree(PAGE *pageList);
 void addToBTree(PAGE *);
+int checkSons(int[]);
 
 #endif

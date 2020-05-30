@@ -594,48 +594,69 @@ void addToBTree(PAGE *btree) {
   //caso 1: árvore vazia
   if(btree[0].keys[0].nusp == 0)
   {
-  	btree[0].keys[0].nusp == student->numUSP;
-  	btree[0].keys[0].rrn == rrn;
+  	printf("caso 1 satisfeito\n");
+  	printf("nusp %d\n",btree[0].keys[0].nusp);
+  	btree[0].keys[0].nusp = student->numUSP;
+  	btree[0].keys[0].rrn = rrn;
   	int j;
     for(j=0;j<order;j++)
     {
       btree[0].sons[j] = -1;
     }
     btree[0].leaf = 1;
+  }else{
+	//caso 2 só tem raiz, sem overflow
+	//checar se todos os ponteiros são -1
+	if(checkSons(btree[0].sons)==0 &&  btree[0].keys[order-2].nusp == 0)
+	{
+		printf("caso 2 satisfeito\n");
+		int i;
+		int nuspAux = student->numUSP;
+		int rrnAux = rrn;
+		for(i=0;i<order-1;i++)
+		{
+			if(btree[0].keys[i].nusp == 0)
+			{
+				btree[0].keys[i].nusp = nuspAux;
+				btree[0].keys[i].rrn = rrnAux;
+				break;
+			}
+			if(btree[0].keys[i].nusp > nuspAux)
+			{
+				//swap values
+				int tempNUSP = btree[0].keys[i].nusp;
+				int tempRRN = btree[0].keys[i].rrn;
 
+				btree[0].keys[i].nusp = nuspAux;
+				btree[0].keys[i].rrn = rrnAux;
+
+				nuspAux = tempNUSP;
+				rrnAux = rrnAux;
+			}
+		}
+		for(int j=0;j<order-1;j++)
+		{
+			printf("\n");
+			printf("nusp: %d\n",btree[0].keys[j].nusp);
+			printf("rrn: %d\n",btree[0].keys[j].rrn);
+		}
+	}
   }
+
   free(student);
-  /*
-  int i=0;
-  while (fread(index, sizeof(INDEX_RECORD), 1, index_stream)) {
-    //add_index_element(list, index);
-    //realloc
-    //list->start = (INDEX_LIST_ELEMENT **) realloc(list->start,sizeof(INDEX_LIST_ELEMENT *) * (list->size));
-    //ptr = realloc(ptr, n2 * sizeof(int));
-    /*typedef struct {
-      //int contador;
-      int keys[order-1]; //assumindo chaves char
-      int sons[order]; //armazena o RRN dos filhos
-      int leaf;//1 = leaf, 0 = not leaf
-    } PAGE; 
-    */
-  	/*
-    pageList = (PAGE *) realloc(pageList, sizeof(PAGE)*(i+1));
-    int j;
-    for(j=0;j<order-1;j++)
-    {
-      pageList[i].keys[j] = page->keys[j];
-    }
-    for(j=0;j<order;j++)
-    {
-      pageList[i].sons[j] = page->sons[j];
-    }
-
-    pageList[i].leaf = page->leaf;
-    i++;
-  }
-  */
   
-  //free(index);
-  //fclose(index_stream);
+}
+
+int checkSons(int sons[])
+{
+	int i;
+	int isEmpty = 0;
+	for(i=0;i<order-1;i++)
+	{
+		if(sons[i]!=-1)
+		{
+			isEmpty = 1;
+		}
+	}
+	return isEmpty;
 }

@@ -46,7 +46,8 @@ int main (int argc, char *argv[]) {
 		switch (comando) {
 			case 1:
 				addToBTree(bTree);
-				readToWriteRecord(listPrim, listSec);
+				addToBTree(bTree);
+				//readToWriteRecord(listPrim, listSec);
 				break;
 			case 2:
 				printf("Digite o numero USP para buscar: \n");
