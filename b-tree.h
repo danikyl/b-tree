@@ -93,5 +93,9 @@ void geradorAlunos(INDEX_RECORD_LIST *, INDEX_SEC_RECORD_LIST *, INDEX_RECORD *,
 void loadBTree(PAGE *pageList);
 void addToBTree(PAGE *);
 int checkSons(int[]);
+void swap(int*, int*);
+int swapValues(PAGE *);
+void insertOrdered(searchKey *,int ,int );
+void setLeafSons(PAGE *);
 
 #endif

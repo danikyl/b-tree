@@ -611,35 +611,53 @@ void addToBTree(PAGE *btree) {
 	{
 		printf("caso 2 satisfeito\n");
 		int i;
-		int nuspAux = student->numUSP;
-		int rrnAux = rrn;
-		for(i=0;i<order-1;i++)
+		insertOrdered(btree[0].keys,student->numUSP,rrn);
+		
+		
+		//caso 3, inserção no nó raiz com overflow
+		if(checkSons(btree[0].sons)==0 &&  btree[0].keys[order-2].nusp != 0)
 		{
-			if(btree[0].keys[i].nusp == 0)
-			{
-				btree[0].keys[i].nusp = nuspAux;
-				btree[0].keys[i].rrn = rrnAux;
-				break;
-			}
-			if(btree[0].keys[i].nusp > nuspAux)
-			{
-				//swap values
-				int tempNUSP = btree[0].keys[i].nusp;
-				int tempRRN = btree[0].keys[i].rrn;
+			searchKey pivot;
+			pivot = (searchKey){.nusp = btree[0].keys[(order-1)/2].nusp, .rrn =btree[0].keys[(order-1)/2].rrn};
+			btree = (PAGE *) realloc(btree, sizeof(PAGE)*(3));
+			setLeafSons(&btree[1]);
+			setLeafSons(&btree[2]);
 
-				btree[0].keys[i].nusp = nuspAux;
-				btree[0].keys[i].rrn = rrnAux;
 
-				nuspAux = tempNUSP;
-				rrnAux = rrnAux;
+			for(int i=0;i<order-1;i++)
+			{
+				if(btree[0].keys[i].nusp<pivot.nusp)
+				{
+					insertOrdered(btree[1].keys,student->numUSP,rrn);
+				}
+				if(btree[0].keys[i].nusp>pivot.nusp)
+				{
+					insertOrdered(btree[2].keys,student->numUSP,rrn);
+				}
+				if(btree[0].keys[i].nusp>pivot.nusp)
+				{
+					btree[0].keys[0].nusp = btree[0].keys[i].nusp;
+					btree[0].keys[0].rrn = btree[0].keys[i].nusp;
+				}
+				btree[0].keys[i].nusp = 0;
+				btree[0].keys[i].rrn = 0;
+				btree[0].sons[1] = 1;
+				btree[0].sons[1] = 2;
+				btree[0].leaf = 0;
 			}
 		}
-		for(int j=0;j<order-1;j++)
+
+		for(int a=0;a<3;a++)
 		{
-			printf("\n");
-			printf("nusp: %d\n",btree[0].keys[j].nusp);
-			printf("rrn: %d\n",btree[0].keys[j].rrn);
+			printf("\npagina: %d\n",a);
+			for(int j=0;j<order-1;j++)
+			{
+				printf("\n");
+				printf("nusp: %d\n",btree[a].keys[j].nusp);
+				printf("rrn: %d\n",btree[a].keys[j].rrn);
+			}
 		}
+		
 	}
   }
 
@@ -659,4 +677,53 @@ int checkSons(int sons[])
 		}
 	}
 	return isEmpty;
+}
+
+int swapValues(PAGE *btree)
+{
+	
+	//swap values
+	//int tempNUSP = btree[0].keys[i].nusp;
+	//int tempRRN = btree[0].keys[i].rrn;
+
+	//btree[0].keys[i].nusp = nuspAux;
+	//btree[0].keys[i].rrn = rrnAux;
+
+	//nuspAux = tempNUSP;
+	//rrnAux = rrnAux;
+}
+void swap(int* x, int* y) 
+{ 
+    int z = *x; 
+    *x = *y; 
+    *y = z; 
+} 
+
+void insertOrdered(searchKey *keys,int nusp,int rrn)
+{
+	int i;
+	for(i=0;i<order-1;i++)
+	{
+		if(keys[i].nusp == 0)
+		{
+			keys[i].nusp = nusp;
+			keys[i].rrn = rrn;
+			break;
+		}
+		if(keys[i].nusp > nusp)
+		{
+			//swap values
+			swap(&nusp,&keys[i].nusp);
+			swap(&rrn,&keys[i].rrn);
+		}
+	}
+}
+
+void setLeafSons(PAGE *page)
+{
+	for(int i=0;i<order;i++)
+	{
+		page->sons[i] = -1;
+	}
+	page->leaf = 1;
 }
