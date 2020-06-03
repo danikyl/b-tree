@@ -191,34 +191,22 @@ void loadBTree(PAGE *pageList) {
   FILE *index_stream= fopen("btree.dat", "r+");
   fseek(index_stream, 0, 0);
   PAGE *page = (PAGE *) malloc(sizeof(PAGE));
-  printf("size of btree: %ld\n",sizeof(pageList));
-  int i=0;
+  
   while (fread(index, sizeof(INDEX_RECORD), 1, index_stream)) {
-    //add_index_element(list, index);
-    //realloc
-    //list->start = (INDEX_LIST_ELEMENT **) realloc(list->start,sizeof(INDEX_LIST_ELEMENT *) * (list->size));
-    //ptr = realloc(ptr, n2 * sizeof(int));
-    /*typedef struct {
-      //int contador;
-      int keys[order-1]; //assumindo chaves char
-      int sons[order]; //armazena o RRN dos filhos
-      int leaf;//1 = leaf, 0 = not leaf
-    } PAGE; 
-    */
-    pageList = (PAGE *) realloc(pageList, sizeof(PAGE)*(i+1));
+    pageList = (PAGE *) realloc(pageList, sizeof(PAGE)*(tree_size+1));
     int j;
     for(j=0;j<order-1;j++)
     {
-      pageList[i].keys[j].nusp = page->keys[j].nusp;
-      pageList[i].keys[j].rrn = page->keys[j].rrn;
+      pageList[tree_size].keys[j].nusp = page->keys[j].nusp;
+      pageList[tree_size].keys[j].rrn = page->keys[j].rrn;
     }
     for(j=0;j<order;j++)
     {
-      pageList[i].sons[j] = page->sons[j];
+      pageList[tree_size].sons[j] = page->sons[j];
     }
 
-    pageList[i].leaf = page->leaf;
-    i++;
+    pageList[tree_size].leaf = page->leaf;
+	tree_size++;
   }
   
   //free(index);
@@ -545,21 +533,26 @@ void print_index_list(INDEX_RECORD_LIST *list) {
 	}
 }
 
-void geradorAlunos(INDEX_RECORD_LIST *listPrim, INDEX_SEC_RECORD_LIST *listSec, INDEX_RECORD *index_record, INDEX_SEC_RECORD *index_sec_record)
+void generateStudents()
 {
+	char firstNames[50][20] = {"Rogelio","Ernie","Debera","Yvonne","Guillermo","Annalisa","Muriel","Julianne","Octavia","Noelia","Providencia","Liliana","Lorriane","Hee","Arica","Brooke","Mandy","Lesli","Reinaldo","Reginald","Ricarda","Cassondra","Tonita","Janean","Nannette","Annelle","Mitzie","Gayla","Alexis","Laureen","Santa","Quinton","Vinnie","Vikki","Maryam","Gus","Saturnina","Marissa","Duncan","Russel","Eugenie","Sherise","Tammara","Maile","Dodie","Moses","Brianna","Enda","Tiera","Terisa"};
+	char lastNames[50][10] = {"Robertson","Santana","Harmon","Collier","Vance","Cabrera","Murphy","Tanner","Valencia","Perez","Pope","Powell","Casey","Fisher","Floyd","Conway","Avila","Gibson","Harrell","Prince","Patel","Glenn","Knapp","Gross","Bush","Estrada","Shannon","Huang","Saunders","Coleman","Mata","Parker","Austin","Richmond","Gentry","Harrison","Sparks","Fritz","Barrett","Norton","Lucas","Salas","Carroll","Shaw","Wade","Howe","Lynch","Krause","Ayala","Silva"};
 	int i;
-	for(i=0;i<data_size;i++)
+	for(i=0;i<3;i++)
 	{
+		int indexFirstName = rand() % 50;
+		int indexLastName = rand() % 50;
 		int nUSP = rand() % 100000;
 		typeStudent *student = (typeStudent *) malloc(sizeof(typeStudent));
 		student->numUSP = nUSP;
-		strcpy(student->name, "Hugo");
-		strcpy(student->lastName, "Cruz");
+		strcpy(student->name, firstNames[indexFirstName]);
+		strcpy(student->lastName, lastNames[indexLastName]);
 		strcpy(student->course, "BSI");
 		student->score = 8.0;
 		student->isDeleted = 0;
 		//writeRecord(listPrim, listSec, student, index_record, index_sec_record);
 		printf("Student inserted: %d\n",nUSP);
+		printf("Name: %s %s\n",firstNames[indexFirstName],lastNames[indexLastName]);
 		free(student);
 	}
 }
@@ -578,19 +571,6 @@ void addToBTree(PAGE *btree) {
 	printf("Student inserted: %d\n",nUSP);
 	printf("RRN: %d\n",rrn);
 	
-	/*
-	printf("Digite o numero USP: \n");
-	scanf ("%d", &student->numUSP);
-	printf("Digite o nome: \n");
-	scanf (" %[^\n]s", student->name);
-	printf("Digite o sobrenome: \n");
-	scanf (" %[^\n]s", student->lastName);
-	printf("Digite o curso: \n");
-	scanf (" %[^\n]s", student->course);
-	printf("Digite a nota: \n");
-	scanf ("%f", &student->score);
-	printf ("%d %s %s %s %.1f\n", student->numUSP, student->name, student->lastName, student->course, student->score);
-	*/
   //caso 1: árvore vazia
   if(btree[0].keys[0].nusp == 0)
   {
@@ -679,19 +659,6 @@ int checkSons(int sons[])
 	return isEmpty;
 }
 
-int swapValues(PAGE *btree)
-{
-	
-	//swap values
-	//int tempNUSP = btree[0].keys[i].nusp;
-	//int tempRRN = btree[0].keys[i].rrn;
-
-	//btree[0].keys[i].nusp = nuspAux;
-	//btree[0].keys[i].rrn = rrnAux;
-
-	//nuspAux = tempNUSP;
-	//rrnAux = rrnAux;
-}
 void swap(int* x, int* y) 
 { 
     int z = *x; 
@@ -712,7 +679,6 @@ void insertOrdered(searchKey *keys,int nusp,int rrn)
 		}
 		if(keys[i].nusp > nusp)
 		{
-			//swap values
 			swap(&nusp,&keys[i].nusp);
 			swap(&rrn,&keys[i].rrn);
 		}

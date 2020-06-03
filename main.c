@@ -5,6 +5,8 @@
 #include "b-tree.h"
 #include <stdlib.h>
 
+int tree_size;
+
 int main (int argc, char *argv[]) {
 	int comando= 06;
 	int nUspToSearch;
@@ -32,6 +34,7 @@ int main (int argc, char *argv[]) {
 
     PAGE *bTree = (PAGE *) calloc(1,sizeof(PAGE));
 
+	tree_size = 0;
 
 	loadIndexPrim(listPrim);
 
@@ -45,8 +48,9 @@ int main (int argc, char *argv[]) {
 		scanf ("%d", &comando);
 		switch (comando) {
 			case 1:
-				addToBTree(bTree);
-				addToBTree(bTree);
+				generateStudents();
+				//addToBTree(bTree);
+				//addToBTree(bTree);
 				//readToWriteRecord(listPrim, listSec);
 				break;
 			case 2:

@@ -15,6 +15,8 @@
 #define TAM 16
 
 
+extern int tree_size;
+
 typedef int tipoChave;
 
 typedef struct {
@@ -89,7 +91,7 @@ void print_sec_index_list(INDEX_SEC_RECORD_LIST *);
 void searchRecordByLastName(INDEX_SEC_RECORD_LIST *, INDEX_RECORD_LIST *);
 void deleteRecordByLastName(INDEX_SEC_RECORD_LIST *, char *, int);
 void deleteAllRecordsByLastName(INDEX_RECORD_LIST *, INDEX_SEC_RECORD_LIST *);
-void geradorAlunos(INDEX_RECORD_LIST *, INDEX_SEC_RECORD_LIST *, INDEX_RECORD *, INDEX_SEC_RECORD *);
+void generateStudents();
 void loadBTree(PAGE *pageList);
 void addToBTree(PAGE *);
 int checkSons(int[]);
