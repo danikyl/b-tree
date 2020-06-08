@@ -5,6 +5,8 @@
 #include "b-tree.h"
 #include <stdlib.h>
 
+int tree_size;
+
 int main (int argc, char *argv[]) {
 	int teste2;
 
@@ -19,7 +21,17 @@ int main (int argc, char *argv[]) {
 	fclose(index_stream);
 
 
+<<<<<<< HEAD
 	B_TREE_HEADER *header = loadBTreeHeader();
+=======
+	tree_size = 0;
+
+	loadIndexPrim(listPrim);
+
+	loadIndexSec(listSec);
+
+    loadBTree(bTree);
+>>>>>>> 6923a4d3b21f90457d13113a4411d866a51cc216
 
 	do {
 		comando = 8;
@@ -27,7 +39,14 @@ int main (int argc, char *argv[]) {
 		scanf ("%d", &comando);
 		switch (comando) {
 			case 1:
+<<<<<<< HEAD
 				readToWriteRecord(header);
+=======
+				generateStudents();
+				//addToBTree(bTree);
+				//addToBTree(bTree);
+				//readToWriteRecord(listPrim, listSec);
+>>>>>>> 6923a4d3b21f90457d13113a4411d866a51cc216
 				break;
 			case 2:
 				printf("Digite o numero USP para buscar: \n");

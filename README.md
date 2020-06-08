@@ -32,7 +32,6 @@ make run
 
 
 * Insert a register in the B-tree
-* - Overflow in root node
 * - Insert in leaf node
 * -- With overflow in leaf node
 * -- Without overflow in leaf node
@@ -41,10 +40,12 @@ make run
 * Create data generator 
 
 ### Doing
-* Insert a register in the B-tree
-* - Insert into an empty tree
+
 
 ### Done
+* Insert a register in the B-tree
+* - Insert into an empty tree
+* - Overflow in root node
 * Load BTree in memory
 * Create Data structure for B-tree
 * Create datafile
