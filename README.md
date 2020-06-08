@@ -28,22 +28,6 @@ cd b-tree
 make run
 ``` 
 
-### Todo list
-
-
-* Insert a register in the B-tree
-* - Overflow in root node
-* - Insert in leaf node
-* -- With overflow in leaf node
-* -- Without overflow in leaf node
-* Insert a register in datafile
-* Search a register by NUSP
-* Create data generator 
-
-### Doing
-* Insert a register in the B-tree
-* - Insert into an empty tree
-
 ### Done
 * Load BTree in memory
 * Create Data structure for B-tree
@@ -51,6 +35,16 @@ make run
 * Create repo
 * Create Readme
 * Select tasks for to do list
+* Insert a register in the B-tree
+* Insert a register in the B-tree
+* Insert into an empty tree
+* Overflow in root node
+* Insert in leaf node
+* With overflow in leaf node
+* Without overflow in leaf node
+* Insert a register in datafile
+* Search a register by NUSP
+* Create data generator 
 
 ## Authors
 
