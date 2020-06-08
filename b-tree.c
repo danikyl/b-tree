@@ -29,196 +29,6 @@ B_TREE_HEADER* loadBTreeHeader() {
 		fread(header, sizeof(B_TREE_HEADER), 1, index_stream);
 	}
 	
-<<<<<<< HEAD
-=======
-}
-
-int add_to_inverted_list(INDEX_SEC_RECORD* record, int nUsp) {
-	INVERTED_LIST_RECORD *inverted_list_record = (INVERTED_LIST_RECORD *) malloc(sizeof(INVERTED_LIST_RECORD));
-	INVERTED_LIST_RECORD *inverted_list_record_iterator = (INVERTED_LIST_RECORD *) calloc(1, sizeof(INVERTED_LIST_RECORD));
-	INVERTED_LIST_RECORD *inverted_list_record_iterator2 = (INVERTED_LIST_RECORD *) calloc(1, sizeof(INVERTED_LIST_RECORD));
-	FILE *inverted_list_file_stream= fopen("inverted_list.dat", "r+");
-	int positionBackingTrack=-1;
-	int currentPosition=-1;
-
-	inverted_list_record->nUsp=nUsp;
-	inverted_list_record->nxtValuePosition = -1;
-
-	//Case lastName is already on List
-	if (record->headPosition != -1) {
-		fseek(inverted_list_file_stream, record->headPosition, SEEK_SET);
-		fread(inverted_list_record_iterator, sizeof(INVERTED_LIST_RECORD), 1, inverted_list_file_stream);
-		currentPosition=record->headPosition;
-		//Case when the first element is the only one on chained list for provided lastname
-		if (inverted_list_record_iterator->nxtValuePosition == -1) {
-			//Unique list element NUSP is bigger than the new record about to be written on file
-			if (inverted_list_record_iterator->nUsp > nUsp) {
-				inverted_list_record->nxtValuePosition=record->headPosition;
-				fseek(inverted_list_file_stream, 0, SEEK_END);
-				record->headPosition=ftell(inverted_list_file_stream);
-				fwrite(inverted_list_record, sizeof(INVERTED_LIST_RECORD), 1, inverted_list_file_stream);
-			}
-			//Case unique list element Nusp is lower than NUSP of new record about to be written on file
-			else {
-				fseek(inverted_list_file_stream, 0, SEEK_END);
-				inverted_list_record_iterator->nxtValuePosition = ftell(inverted_list_file_stream);
-				fwrite(inverted_list_record, sizeof(INVERTED_LIST_RECORD), 1, inverted_list_file_stream);
-
-				fseek(inverted_list_file_stream, record->headPosition, SEEK_SET);
-				fwrite(inverted_list_record_iterator, sizeof(INVERTED_LIST_RECORD), 1, inverted_list_file_stream);
-				
-			}
-		}
-		//Case the chained list has more values for provided lastname
-		else {
-			while (inverted_list_record_iterator->nxtValuePosition != -1 && inverted_list_record_iterator->nUsp < nUsp) {
-				positionBackingTrack=currentPosition;
-				currentPosition=inverted_list_record_iterator->nxtValuePosition;
-
-
-				inverted_list_record_iterator2->nUsp = inverted_list_record_iterator->nUsp;
-				inverted_list_record_iterator2->nxtValuePosition = inverted_list_record_iterator->nxtValuePosition;
-				fseek(inverted_list_file_stream, currentPosition, SEEK_SET);
-				fread(inverted_list_record_iterator, sizeof(INVERTED_LIST_RECORD), 1, inverted_list_file_stream);
-			}
-			if (inverted_list_record_iterator->nUsp < nUsp) {
-				fseek(inverted_list_file_stream, 0, SEEK_END);
-				inverted_list_record_iterator->nxtValuePosition=ftell(inverted_list_file_stream);
-				fwrite(inverted_list_record, sizeof(INVERTED_LIST_RECORD), 1, inverted_list_file_stream);
-
-				fseek(inverted_list_file_stream, currentPosition, SEEK_SET);
-				fwrite(inverted_list_record_iterator, sizeof(INVERTED_LIST_RECORD), 1, inverted_list_file_stream);
-			}
-			//In this case the new record should be added between two records
-			else {
-				fseek(inverted_list_file_stream, 0, SEEK_END);
-				inverted_list_record_iterator2->nxtValuePosition=ftell(inverted_list_file_stream);
-
-				inverted_list_record->nxtValuePosition=currentPosition;
-				fwrite(inverted_list_record, sizeof(INVERTED_LIST_RECORD), 1, inverted_list_file_stream);
-
-				fseek(inverted_list_file_stream, positionBackingTrack, SEEK_SET);
-				fwrite(inverted_list_record_iterator2, sizeof(INVERTED_LIST_RECORD), 1, inverted_list_file_stream);
-			}
-		}
-		
-		
-	}
-	//Case lastname is not on the chained list yet
-	else {
-		fseek(inverted_list_file_stream, 0, SEEK_END);
-		fwrite(inverted_list_record, sizeof(INVERTED_LIST_RECORD), 1, inverted_list_file_stream);
-		printf("Added to inverted_list: %d %d\n", inverted_list_record->nUsp, inverted_list_record->nxtValuePosition);
-		record->headPosition = ftell(inverted_list_file_stream) - sizeof(INVERTED_LIST_RECORD);
-	}
-	
-
-
-	fclose(inverted_list_file_stream);
-	free(inverted_list_record);
-	free(inverted_list_record_iterator);
-	free(inverted_list_record_iterator2);
-
-	return record->headPosition;
-	
-}
-
-void loadBTree(PAGE *pageList) {
-  printf("entrou na btree \n");
-  FILE *index_stream= fopen("btree.dat", "r+");
-  fseek(index_stream, 0, 0);
-  PAGE *page = (PAGE *) malloc(sizeof(PAGE));
-  
-  while (fread(index, sizeof(INDEX_RECORD), 1, index_stream)) {
-    pageList = (PAGE *) realloc(pageList, sizeof(PAGE)*(tree_size+1));
-    int j;
-    for(j=0;j<order-1;j++)
-    {
-      pageList[tree_size].keys[j].nusp = page->keys[j].nusp;
-      pageList[tree_size].keys[j].rrn = page->keys[j].rrn;
-    }
-    for(j=0;j<order;j++)
-    {
-      pageList[tree_size].sons[j] = page->sons[j];
-    }
-
-    pageList[tree_size].leaf = page->leaf;
-	tree_size++;
-  }
-  
-  //free(index);
-  fclose(index_stream);
-}
-
-void loadIndexPrim(INDEX_RECORD_LIST *list) {
-	FILE *index_stream= fopen("index_prim.dat", "r+");
-	fseek(index_stream, 0, 0);
-	INDEX_RECORD *index = (INDEX_RECORD *) malloc(sizeof(INDEX_RECORD));
-
-	while (fread(index, sizeof(INDEX_RECORD), 1, index_stream)) {
-		add_index_element(list, index);
-	}
-	
-	free(index);
-	fclose(index_stream);
-}
-
-void loadIndexSec(INDEX_SEC_RECORD_LIST *list) {
-	FILE *index_stream= fopen("index_sec.dat", "r+");
-	fseek(index_stream, 0, 0);
-	INDEX_SEC_RECORD *index = (INDEX_SEC_RECORD *) malloc(sizeof(INDEX_SEC_RECORD));
-
-	while (fread(index, sizeof(INDEX_SEC_RECORD), 1, index_stream)) {
-		add_index_sec_element(list, index, 0, -1);
-	}
-	
-	free(index);
-	fclose(index_stream);
-}
-void exitAndSave(INDEX_RECORD_LIST *listPrim, INDEX_SEC_RECORD_LIST *listSec) {
-	FILE *index_stream= fopen("index_prim.dat", "w+");
-	FILE *index_sec_stream= fopen("index_sec.dat", "w+");
-
-	INDEX_LIST_ELEMENT **iterator = listPrim->start;
-	INDEX_SEC_RECORD **iterator2 = listSec->start;
-	int i;
-	//Writing primary index file and releasing memory
-	for (i=0; i<listPrim->size; i++) {
-		if(iterator[i]->record) {
-			fwrite(iterator[i]->record, sizeof(INDEX_RECORD), 1, index_stream);
-			free(iterator[i]->record);
-			free(iterator[i]);
-		}
-		
-	}
-	//Writing secondary index file and releasing memory
-	for (i=0; i<listSec->size; i++) {
-		fwrite(iterator2[i], sizeof(INDEX_SEC_RECORD), 1, index_sec_stream);
-		free(iterator2[i]);
-	}
-
-
-	free(listPrim->start);
-	free(listPrim);
-
-	free(listSec->start);
-	free(listSec);
-
-	fclose(index_stream);
-	fclose(index_sec_stream);
-
-}
-
-void print_index_file() {
-	FILE *index_stream= fopen("index_prim.dat", "r+");
-	INDEX_RECORD *iterator = (INDEX_RECORD *) malloc(sizeof(INDEX_RECORD));
-
-	printf("PRINTING INDEX FILE: \n");
-	while (fread(iterator, sizeof(INDEX_RECORD), 1, index_stream)) {
-		printf("FILE: USP N: %d, POSTIION: %d\n", iterator->nUsp, iterator->position);
-	}	
-	
->>>>>>> 6923a4d3b21f90457d13113a4411d866a51cc216
 	fclose(index_stream);
 	return header;
 }
@@ -375,7 +185,6 @@ void writeRecord(B_TREE_HEADER *header, typeStudent *student) {
 			
 			
 
-<<<<<<< HEAD
 			//Updating root node on index file
 			fseek(index_file_stream, header->rootNodeRRN, SEEK_SET);
 			fwrite(root_node, sizeof(B_TREE_NODE), 1, index_file_stream);
@@ -433,99 +242,6 @@ void writeRecord(B_TREE_HEADER *header, typeStudent *student) {
 				higher_child_node->keyVector[k] = keyVectorAux[i];
 				higher_child_node->dataRrnVector[k] = dataRrnVectorAux[i];
 				k++;
-=======
-void generateStudents()
-{
-	char firstNames[50][20] = {"Rogelio","Ernie","Debera","Yvonne","Guillermo","Annalisa","Muriel","Julianne","Octavia","Noelia","Providencia","Liliana","Lorriane","Hee","Arica","Brooke","Mandy","Lesli","Reinaldo","Reginald","Ricarda","Cassondra","Tonita","Janean","Nannette","Annelle","Mitzie","Gayla","Alexis","Laureen","Santa","Quinton","Vinnie","Vikki","Maryam","Gus","Saturnina","Marissa","Duncan","Russel","Eugenie","Sherise","Tammara","Maile","Dodie","Moses","Brianna","Enda","Tiera","Terisa"};
-	char lastNames[50][10] = {"Robertson","Santana","Harmon","Collier","Vance","Cabrera","Murphy","Tanner","Valencia","Perez","Pope","Powell","Casey","Fisher","Floyd","Conway","Avila","Gibson","Harrell","Prince","Patel","Glenn","Knapp","Gross","Bush","Estrada","Shannon","Huang","Saunders","Coleman","Mata","Parker","Austin","Richmond","Gentry","Harrison","Sparks","Fritz","Barrett","Norton","Lucas","Salas","Carroll","Shaw","Wade","Howe","Lynch","Krause","Ayala","Silva"};
-	int i;
-	for(i=0;i<3;i++)
-	{
-		int indexFirstName = rand() % 50;
-		int indexLastName = rand() % 50;
-		int nUSP = rand() % 100000;
-		typeStudent *student = (typeStudent *) malloc(sizeof(typeStudent));
-		student->numUSP = nUSP;
-		strcpy(student->name, firstNames[indexFirstName]);
-		strcpy(student->lastName, lastNames[indexLastName]);
-		strcpy(student->course, "BSI");
-		student->score = 8.0;
-		student->isDeleted = 0;
-		//writeRecord(listPrim, listSec, student, index_record, index_sec_record);
-		printf("Student inserted: %d\n",nUSP);
-		printf("Name: %s %s\n",firstNames[indexFirstName],lastNames[indexLastName]);
-		free(student);
-	}
-}
-
-void addToBTree(PAGE *btree) {
-  
-	typeStudent *student = (typeStudent *) malloc(sizeof(typeStudent));
-	int nUSP = rand() % 100000;
-	student->numUSP = nUSP;
-	strcpy(student->name, "Hugo");
-	strcpy(student->lastName, "Cruz");
-	strcpy(student->course, "BSI");
-	student->score = 8.0;
-	student->isDeleted = 0;
-	int rrn = writeRecord(student);
-	printf("Student inserted: %d\n",nUSP);
-	printf("RRN: %d\n",rrn);
-	
-  //caso 1: árvore vazia
-  if(btree[0].keys[0].nusp == 0)
-  {
-  	printf("caso 1 satisfeito\n");
-  	printf("nusp %d\n",btree[0].keys[0].nusp);
-  	btree[0].keys[0].nusp = student->numUSP;
-  	btree[0].keys[0].rrn = rrn;
-  	int j;
-    for(j=0;j<order;j++)
-    {
-      btree[0].sons[j] = -1;
-    }
-    btree[0].leaf = 1;
-  }else{
-	//caso 2 só tem raiz, sem overflow
-	//checar se todos os ponteiros são -1
-	if(checkSons(btree[0].sons)==0 &&  btree[0].keys[order-2].nusp == 0)
-	{
-		printf("caso 2 satisfeito\n");
-		int i;
-		insertOrdered(btree[0].keys,student->numUSP,rrn);
-		
-		
-		//caso 3, inserção no nó raiz com overflow
-		if(checkSons(btree[0].sons)==0 &&  btree[0].keys[order-2].nusp != 0)
-		{
-			searchKey pivot;
-			pivot = (searchKey){.nusp = btree[0].keys[(order-1)/2].nusp, .rrn =btree[0].keys[(order-1)/2].rrn};
-			btree = (PAGE *) realloc(btree, sizeof(PAGE)*(3));
-			setLeafSons(&btree[1]);
-			setLeafSons(&btree[2]);
-
-
-			for(int i=0;i<order-1;i++)
-			{
-				if(btree[0].keys[i].nusp<pivot.nusp)
-				{
-					insertOrdered(btree[1].keys,student->numUSP,rrn);
-				}
-				if(btree[0].keys[i].nusp>pivot.nusp)
-				{
-					insertOrdered(btree[2].keys,student->numUSP,rrn);
-				}
-				if(btree[0].keys[i].nusp>pivot.nusp)
-				{
-					btree[0].keys[0].nusp = btree[0].keys[i].nusp;
-					btree[0].keys[0].rrn = btree[0].keys[i].nusp;
-				}
-				btree[0].keys[i].nusp = 0;
-				btree[0].keys[i].rrn = 0;
-				btree[0].sons[1] = 1;
-				btree[0].sons[1] = 2;
-				btree[0].leaf = 0;
->>>>>>> 6923a4d3b21f90457d13113a4411d866a51cc216
 			}
 
 			//Writing new nodes to file and getting rrn
@@ -547,7 +263,6 @@ void addToBTree(PAGE *btree) {
 			free(lower_child_node);
 		}
 
-<<<<<<< HEAD
 		free(root_node);
 
 
@@ -680,19 +395,6 @@ void addToBTree(PAGE *btree) {
 
 		fclose(index_file_stream);
 		free(node_iter);
-=======
-		for(int a=0;a<3;a++)
-		{
-			printf("\npagina: %d\n",a);
-			for(int j=0;j<order-1;j++)
-			{
-				printf("\n");
-				printf("nusp: %d\n",btree[a].keys[j].nusp);
-				printf("rrn: %d\n",btree[a].keys[j].rrn);
-			}
-		}
-		
->>>>>>> 6923a4d3b21f90457d13113a4411d866a51cc216
 	}
 
 	
@@ -750,7 +452,7 @@ void generateStudents(int student_quantity, B_TREE_HEADER *header)
 
 		//Checking if nUsp is already in use
 		int isInUse= alreadyInUse(student->numUSP, header);
-		if (isInUse) printf("Erro! Aluno já cadastrado.\n");
+		if (isInUse) printf("Error! Aluno já cadastrado.\n");
 		else {
 			writeRecord(header, student);
 			printf("Student inserted: %d\n",nUSP);
@@ -758,44 +460,4 @@ void generateStudents(int student_quantity, B_TREE_HEADER *header)
 		}
 		free(student);
 	}
-<<<<<<< HEAD
 }
-=======
-	return isEmpty;
-}
-
-void swap(int* x, int* y) 
-{ 
-    int z = *x; 
-    *x = *y; 
-    *y = z; 
-} 
-
-void insertOrdered(searchKey *keys,int nusp,int rrn)
-{
-	int i;
-	for(i=0;i<order-1;i++)
-	{
-		if(keys[i].nusp == 0)
-		{
-			keys[i].nusp = nusp;
-			keys[i].rrn = rrn;
-			break;
-		}
-		if(keys[i].nusp > nusp)
-		{
-			swap(&nusp,&keys[i].nusp);
-			swap(&rrn,&keys[i].rrn);
-		}
-	}
-}
-
-void setLeafSons(PAGE *page)
-{
-	for(int i=0;i<order;i++)
-	{
-		page->sons[i] = -1;
-	}
-	page->leaf = 1;
-}
->>>>>>> 6923a4d3b21f90457d13113a4411d866a51cc216
