@@ -452,7 +452,7 @@ void generateStudents(int student_quantity, B_TREE_HEADER *header)
 
 		//Checking if nUsp is already in use
 		int isInUse= alreadyInUse(student->numUSP, header);
-		if (isInUse) printf("Erro! Aluno já cadastrado.\n");
+		if (isInUse) printf("Error! Aluno já cadastrado.\n");
 		else {
 			writeRecord(header, student);
 			printf("Student inserted: %d\n",nUSP);
