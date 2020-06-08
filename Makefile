@@ -7,11 +7,14 @@ main.o:	main.c b-tree.c
 clear:
 		@find -name '*.o' | xargs rm -rf {}
 		@find -name '*~'  | xargs rm -rf {}
+		@rm -rf main
 
 clearAll:
 		@find -name '*.o' | xargs rm -rf {}
 		@find -name '*~'  | xargs rm -rf {}
-		@find -name '*.dat'  | xargs rm -rf {}
+		@find -name 'index.dat'  | xargs rm -rf {}
+		@find -name 'dados.txt'  | xargs rm -rf {}
+		@rm -rf main
 
 run:
 		@./main

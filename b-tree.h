@@ -1,13 +1,16 @@
 /*  
-    Hugo Fellipe Lage Alvarães da Cruz  10903872
-    Daniel De Marco Fucci               
+    Daniel De Marco Fucci
+	Hugo Fellipe Lage Alvarães da Cruz
 */
 #ifndef ARRAY_LIST_H
 #define ARRAY_LIST_H
 #define data_size 128
-#define order 8
+#define ERR_NOT_FOUND -1
 
 #define LAST_NAME_SIZE 50
+
+//Using below order number, we have node size being 4kb
+#define B_TREE_ORDER 171
 
 #include <stdio.h>
 
@@ -27,71 +30,29 @@ typedef struct {
 } typeStudent;
 
 typedef struct {
-	tipoChave nusp;
-	int rrn;
-} searchKey;
+	int nodeSize;
+	long int keyVector[B_TREE_ORDER-1];
+	long int dataRrnVector[B_TREE_ORDER-1];
+	long int childrenVector[B_TREE_ORDER];
+} B_TREE_NODE;
 
 typedef struct {
-	//int contador;
-	searchKey keys[order-1]; 
-	int sons[order]; //armazena o RRN dos filhos
-	int leaf;//1 = leaf, 0 = not leaf
-} PAGE; 
+	int nodesNumber;
+	int order;
+	long int rootNodeRRN;
+} B_TREE_HEADER;
 
-
-typedef struct {
-	int nUsp;
-	int position;
-} INDEX_RECORD;
-
-typedef struct {
-	int nUsp;
-	int nxtValuePosition;
-} INVERTED_LIST_RECORD;
-
-typedef struct {
-	char lastName[LAST_NAME_SIZE];
-	int headPosition;
-} INDEX_SEC_RECORD;
-
-typedef struct INDEX_LIST_ELEMENT INDEX_LIST_ELEMENT;
-
-struct INDEX_LIST_ELEMENT{
-	INDEX_RECORD *record;
-};
-
-typedef struct {
-	INDEX_LIST_ELEMENT **start;
-	int size;
-} INDEX_RECORD_LIST;
-
-typedef struct {
-	INDEX_SEC_RECORD **start;
-	int size;
-} INDEX_SEC_RECORD_LIST;
-
-void readToWriteRecord(INDEX_RECORD_LIST *, INDEX_SEC_RECORD_LIST *);
-int writeRecord(typeStudent *);
+void readToWriteRecord(B_TREE_HEADER *);
+void writeRecord(B_TREE_HEADER *, typeStudent *);
 void showAll();
-void searchRecordByNUSP(INDEX_RECORD_LIST *, int);
-void deleteRecord(INDEX_RECORD_LIST *, INDEX_SEC_RECORD_LIST *, int);
-void loadIndexPrim(INDEX_RECORD_LIST *);
-void loadIndexSec(INDEX_SEC_RECORD_LIST *);
-void add_index_element(INDEX_RECORD_LIST *, INDEX_RECORD*);
-void print_index_list(INDEX_RECORD_LIST *);
-void exitAndSave(INDEX_RECORD_LIST *, INDEX_SEC_RECORD_LIST *);
-void print_index_file();
-int findUspNumber_binary_search(int, INDEX_RECORD_LIST *);
-int findUspNumber_binary_search_and_delete(int, INDEX_RECORD_LIST *);
-int add_to_inverted_list(INDEX_SEC_RECORD *, int);
-void add_index_sec_element(INDEX_SEC_RECORD_LIST *, INDEX_SEC_RECORD *, int, int);
-void print_sec_index_list(INDEX_SEC_RECORD_LIST *);
-void searchRecordByLastName(INDEX_SEC_RECORD_LIST *, INDEX_RECORD_LIST *);
-void deleteRecordByLastName(INDEX_SEC_RECORD_LIST *, char *, int);
-void deleteAllRecordsByLastName(INDEX_RECORD_LIST *, INDEX_SEC_RECORD_LIST *);
-void geradorAlunos(INDEX_RECORD_LIST *, INDEX_SEC_RECORD_LIST *, INDEX_RECORD *, INDEX_SEC_RECORD *);
-void loadBTree(PAGE *pageList);
-void addToBTree(PAGE *);
-int checkSons(int[]);
+void searchRecordByNUSP(B_TREE_HEADER *, int);
+B_TREE_HEADER* loadBTreeHeader();
+void print_b_tree(B_TREE_HEADER *);
+int findUspNumber(int, B_TREE_HEADER *);
+void printNodeSize();
+B_TREE_NODE * createNewNode(B_TREE_HEADER *header);
+void freeNode(B_TREE_NODE *);
+int alreadyInUse (int, B_TREE_HEADER *);
+void generateStudents(int, B_TREE_HEADER *);
 
 #endif
