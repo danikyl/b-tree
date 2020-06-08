@@ -48,9 +48,9 @@ make run
 
 ## Authors
 
-* **Hugo Fellipe** - [Github](https://github.com/Hugo-cruz)
-
 * **Daniel Fucci** - [Github](https://github.com/danikyl)
+
+* **Hugo Fellipe** - [Github](https://github.com/Hugo-cruz)
 
 
 ## License
