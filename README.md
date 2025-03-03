@@ -50,10 +50,3 @@ make run
 
 * **Daniel Fucci** - [Github](https://github.com/danikyl)
 
-* **Hugo Fellipe** - [Github](https://github.com/Hugo-cruz)
-
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
